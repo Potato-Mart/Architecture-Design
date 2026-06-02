@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply min-h-screen bg-ink bg-app-radial bg-fixed font-sans text-white antialiased;
+    line-height: 1.6;
+  }
+
+  ::selection {
+    @apply bg-primary/30 text-white;
+  }
+}
+
+@layer components {
+  /* Glassmorphism card */
+  .card {
+    @apply rounded-2xl border border-white/25 bg-slate-900/85 p-8 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] backdrop-blur-xl transition;
+  }
+  .card-hover {
+    @apply hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.6)];
+  }
+
+  /* Gradient brand text */
+  .brand-text {
+    @apply bg-brand-gradient bg-clip-text text-transparent;
+  }
+
+  /* Badges */
+  .badge {
+    @apply inline-block rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider;
+  }
+  .badge-primary {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+  }
+  .badge-danger {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+  }
+  .badge-success {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+  }
+  .badge-warning {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+  }
+  .badge-purple {
+    background: rgba(167, 139, 250, 0.2);
+    color: #c4b5fd;
+  }
+  .badge-accent {
+    background: rgba(52, 211, 153, 0.2);
+    color: #34d399;
+  }
+
+  /* Dot-grid background for the architecture topology map */
+  .topology-grid {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  /* Arrow bullet list */
+  .bullet-list {
+    @apply mt-2 list-none space-y-2;
+  }
+  .bullet-list > li {
+    @apply relative pl-6 text-slate-300;
+  }
+  .bullet-list > li::before {
+    content: '→';
+    @apply absolute left-0 text-primary;
+  }
+}

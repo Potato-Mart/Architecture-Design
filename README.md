@@ -1,64 +1,68 @@
-# 🥔 Potato Mart (土豆商城) 系統架構與設計文件
+# 土豆商城架構藍圖 (Potato Mart Architecture)
 
-這是一份涵蓋「土豆商城 (Potato Mart)」從初期 MVP 到未來可規模化、支援 VR 購物體驗的**完整系統架構與發展梯次規劃文件**。
+互動式架構與開發藍圖網站，內容來自本專案 `docs/` 內的 HTML 文件。
+以 **Vite + React + TypeScript + Tailwind CSS + TanStack (Router & Query)** 重新設計。
 
-本專案採用**極致降本**的微軟 Azure Serverless 微服務架構，搭配 MongoDB Atlas，確保在享有強大擴充彈性的同時，將初期的營運成本降至最低。
+## 頁面結構
 
-## 🌐 線上預覽 (Live Preview)
+| 路徑 | 內容 |
+| --- | --- |
+| `/` | 總覽首頁 — 包含完整的互動式全景系統架構、里程碑與梯次總覽 |
+| `/architecture` | 互動式系統拓樸圖，點擊節點檢視技術選型與防護設定 |
+| `/phases` | 開發梯次 (Phases) 列表 |
+| `/phases/$slug` | 各梯次詳情：核心目標、潛在風險、改進策略與完整任務清單 |
+| `/tickets` | 全部 Backlog Tickets，可搜尋與依分類/梯次篩選 |
+| `/tickets/$id` | 單一任務詳情，含驗收標準 |
+| `/about` | 關於本藍圖與技術選型 |
 
-您可以直接點擊下方連結，檢視完整的互動式架構圖與各梯次的詳細開發任務 (Backlog Tickets)：
+- **Tickets** (`/tickets`) = 全部任務
+- **Phases** (`/phases`) = 各開發梯次
 
-👉 **[Potato Mart 系統架構預覽 (Netlify)](https://architecture-design-preview.netlify.app/)**
+> 已移除原模板的 Auth (login / register / reset password)、Pricing、Customers、Support center、Apps 等頁面。
 
----
+## 開發
 
-## 🏗️ 系統架構亮點 (Architecture Highlights)
-
-本系統採微服務架構 (Microservices Architecture)，並根據領域驅動設計 (DDD) 拆分核心業務：
-
-*   **前端網頁 (Web)**：全面採用 **Vite + React + TypeScript + Tailwind CSS**，並部署於 **Azure Static Web Apps** (享有免費層與全域 CDN 快取)。
-*   **行動端 (APP)**：
-    *   消費者與 B2B 客戶端採用原生開發：**Kotlin (Android)** 與 **Swift (iOS)**，追求極致流暢的購物與直播觀看體驗。
-    *   內部營運 POS 機採用 **Expo + React Native + NativeWind**，具備 Offline-first (離線優先) 設計。
-*   **後端微服務 (Microservices)**：採用 **Go (Golang)** 開發高效能 API (包含 Auth, Commerce, Operations 等)。直播服務則採用 **Node.js** 處理 WebSocket 併發。
-*   **基礎設施 (Infrastructure)**：
-    *   **運算層**：採用 **Azure Container Apps (ACA)**，具備 Scale to Zero 特性，免除 Kubernetes (AKS) 的高昂月費與維護成本。
-    *   **資料庫**：採用 **MongoDB Atlas**，支援靈活的 Schema 與多租戶 (Multi-tenant) 資料庫隔離。
-    *   **快取與訊息佇列**：利用 **Azure Cache for Redis** 防止超賣，並透過 **Azure Event Hubs** 進行非同步事件解耦。
-
----
-
-## 📅 發展梯次與里程碑 (Phases & Milestones)
-
-整個專案的實作劃分為 8 個主要梯次 (Phases)，每個梯次皆有明確的 GitHub Backlog Tickets 與驗收標準 (AC)：
-
-1.  **第一梯次 (6月底前) - 內部 MVP**：建置 Azure ACA 與 MongoDB 基礎，實作內部員工登入、庫存盤點、揀貨單自動化與 POS 基礎綁定。
-2.  **第二梯次 (7月底前) - 替換現有系統**：淘汰舊有 Pisell 系統，完成購物車結帳、Adyen POS 金流串接，並將舊資料透過 ETL 轉移。
-3.  **第三梯次 (9月底前) - 雙平台網頁與手機版上線**：正式發布 B2C 與 B2B 專屬平台，行動端提交 App Store 與 Google Play 審查，並整合推播功能。
-4.  **第四梯次 (11月底前) - 效能強化與直播導入**：壓測系統以應對年底旺季，導入 Redis 分散式鎖，並串接專業直播 SaaS (Mux API / AWS IVS) 實作「邊看邊買」。
-5.  **第五梯次 (2027年2月底) - 可規模化複製系統 (SaaS 化)**：重構資料庫以支援多租戶 (Multi-tenancy)，支援快速展店與廠區獨立管理。
-6.  **第六梯次 (2027年5月底) - 對外開放系統 (Open API)**：導入企業級 Azure API Management (APIM)，建立 Developer Portal 與 Webhook 機制供外部廠商對接。
-7.  **第七梯次 (2027年7月底) - 高併發可擴展系統**：實作 MongoDB Sharding，導入 BFF (Backend-For-Frontend) 架構與背景 Worker 處理耗時任務。
-8.  **第八梯次 (2027年下半) - VR 版商場體驗**：採用 WebXR 與 Three.js 打造虛擬展間，結合 3D 模型與 AR 技術，提供元宇宙沉浸式購物體驗。
-
----
-
-## 📂 資料夾結構 (Repository Structure)
-
-```text
-Architecture-Design/
-├── README.md               # 本文件
-└── docs/                   # 生成的 HTML 文件目錄 (部署至 Netlify)
-    ├── css/
-    │   └── style.css       # 全域共用樣式表
-    ├── index.html          # 總覽儀表板 (Dashboard)
-    ├── architecture.html   # 互動式全景架構圖 (系統拓樸)
-    ├── phase1.html         # 第一梯次任務清單
-    ├── phase2.html         # 第二梯次任務清單
-    ├── phase3.html         # 第三梯次任務清單
-    ├── phase4.html         # 第四梯次任務清單
-    ├── phase5.html         # 第五梯次任務清單
-    ├── phase6.html         # 第六梯次任務清單
-    ├── phase7.html         # 第七梯次任務清單
-    └── phase8.html         # 第八梯次任務清單
+```bash
+npm install
+npm run dev      # 啟動開發伺服器 (http://localhost:5173)
+npm run build    # 型別檢查 + 產出 production 版本至 dist/
+npm run preview  # 預覽 production build
 ```
+
+## 資料來源
+
+頁面資料由 `docs/phase*.html` 自動解析而來：
+
+```bash
+python scripts/parse_docs.py
+```
+
+會產出：
+- `src/data/phases.ts` — 各梯次的目標/風險/改進與任務 (供 Phases 頁面使用)
+- `src/data/tickets.ts` — 攤平的全部任務 (供 Tickets 頁面使用)
+
+`src/data/architecture.ts` 則為全景架構拓樸圖的節點資料 (移植自 `docs/architecture.html`)。
+
+## 資產
+
+- `public/logo.png` — 網站 Logo
+- `public/logo.ico` — 瀏覽器分頁圖示 (favicon)
+
+## 安全性 (Security)
+
+部署於 Netlify，所有安全標頭與 SPA 路由 fallback 皆定義於 [`netlify.toml`](./netlify.toml)：
+
+- **Content-Security-Policy** — 嚴格鎖定同源 (`default-src 'self'`)，並設定 `script-src 'self'`、`style-src 'self'`、`object-src 'none'`、`frame-ancestors 'none'`、`base-uri 'self'`、`upgrade-insecure-requests`。本站不使用任何第三方來源 (Inter 字型已自架，無外部 script/API)。
+- **HSTS** (`Strict-Transport-Security`) — 強制 HTTPS。
+- **X-Frame-Options: DENY** + `frame-ancestors 'none'` — 防點擊劫持 (clickjacking)。
+- **X-Content-Type-Options: nosniff** — 防 MIME 嗅探。
+- **Referrer-Policy** 與 **Permissions-Policy** — 限制 referrer 外洩並關閉未使用的瀏覽器功能 (相機、麥克風、地理位置等)。
+- **Cross-Origin-Opener-Policy / Resource-Policy** — 跨來源隔離。
+
+設計上的安全特性：
+
+- 純靜態、唯讀網站；無後端、無登入、無使用者輸入或表單送出。
+- 全程未使用 `dangerouslySetInnerHTML` / `innerHTML` / `eval`，無動態 HTML 注入面。
+- 字型自架 (`@fontsource-variable/inter`)，不向第三方發出任何請求 (隱私 + 可套用最嚴格 CSP)。
+
+相依套件：已升級至 **Vite 8**，修補先前 `esbuild` 開發伺服器的 advisory (GHSA-67mh-4wv8-2f99)。`npm audit` 目前回報 **0 個弱點**。
