@@ -50,7 +50,14 @@ python scripts/parse_docs.py
 
 ## 安全性 (Security)
 
-部署於 Netlify，所有安全標頭與 SPA 路由 fallback 皆定義於 [`netlify.toml`](./netlify.toml)：
+部署於 Netlify。安全標頭與 SPA 路由 fallback 以兩種方式提供，確保不論用哪種部署都會生效：
+
+- **Git 連動 / `netlify deploy` (由 Netlify 執行 build)** → 讀取倉庫根目錄的 [`netlify.toml`](./netlify.toml)。
+- **手動上傳 build 資料夾 (`dist/`)** → Netlify 改讀 publish 資料夾內的 `_headers` 與 `_redirects`。這兩個檔案放在 [`public/`](./public)，Vite build 時會原樣複製進 `dist/`，所以 build 資料夾一定包含它們。
+
+> ⚠️ `netlify.toml` **不會**被複製進 `dist/`；它只在 Netlify 自行 build 時生效。若你只上傳 `dist/`，靠的是 `public/_headers` 與 `public/_redirects`。三者內容保持一致。
+
+設定的安全標頭：
 
 - **Content-Security-Policy** — 嚴格鎖定同源 (`default-src 'self'`)，並設定 `script-src 'self'`、`style-src 'self'`、`object-src 'none'`、`frame-ancestors 'none'`、`base-uri 'self'`、`upgrade-insecure-requests`。本站不使用任何第三方來源 (Inter 字型已自架，無外部 script/API)。
 - **HSTS** (`Strict-Transport-Security`) — 強制 HTTPS。
