@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第六梯次：對外開放系統 (Open API) - 土豆商城 (Azure)</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <!-- Brand logo -->
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#3b82f6" />
+                        <stop offset="100%" stop-color="#06b6d4" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            土豆商城
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="index.html">總覽儀表板 (Dashboard)</a></li>
+            <li class="nav-item"><a href="architecture.html">全景架構圖 (Architecture)</a></li>
+            <li class="nav-item"><a href="phase1.html">第一梯次 (6月底前)</a></li>
+            <li class="nav-item"><a href="phase2.html">第二梯次 (7月底前)</a></li>
+            <li class="nav-item"><a href="phase3.html">第三梯次 (9月底前)</a></li>
+            <li class="nav-item"><a href="phase4.html">第四梯次 (11月底前)</a></li>
+            <li class="nav-item"><a href="phase5.html">第五梯次 (2027年2月底)</a></li>
+            <li class="nav-item"><a href="phase6.html" class="active">第六梯次 (2027年5月底)</a></li>
+            <li class="nav-item"><a href="phase7.html">第七梯次 (2027年7月底)</a></li>
+            <li class="nav-item"><a href="phase8.html">第八梯次 (2027年下半)</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1 class="page-title">第六梯次：對外開放系統 (Open API)</h1>
+            <p class="page-subtitle">目標期限：2027年5月底前 | 重點：升級 Azure API Management、外部開發者入口</p>
+        </header>
+
+        <div class="grid-2">
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2 class="card-title"><span class="badge badge-success">階段任務</span> 核心目標與範圍</h2>
+                <div class="card-content">
+                    <p>開放系統核心能力，讓外部夥伴、物流供應商或其他企業能以程式化方式對接我們的電商與庫存資料。</p>
+                    <ul class="bullet-list">
+                        <li>升級基礎設施：正式導入企業級的 <b>Azure API Management (APIM)</b> 作為對外防護閘道。</li>
+                        <li>實作 OAuth 2.0 (Client Credentials) 以核發存取金鑰 (API Key)。</li>
+                        <li>建立 Developer Portal (開發者入口網站)，提供詳細的 API 文件 (Swagger/OpenAPI)。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title"><span class="badge badge-danger">潛在風險</span></h2>
+                <div class="card-content">
+                    <ul class="bullet-list">
+                        <li>開放對外 API 若缺乏完善的限流與配額管理，可能遭受 DDoS 攻擊。</li>
+                        <li>外部開發者呼叫 API 造成資料毀損或越權存取他人資料。</li>
+                        <li>APIM 服務訂閱與計費模型若設計不當，可能導致營收損失。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h2 class="card-title"><span class="badge badge-primary">修復與改進</span></h2>
+                <div class="card-content">
+                    <ul class="bullet-list">
+                        <li>透過 Azure API Management 實施嚴格的 Subscription Key 與速率限制 (Rate Limiting)。</li>
+                        <li>提供隔離的 Sandbox (測試環境) 供合作夥伴開發測試。</li>
+                        <li>在 APIM 層實作 Request/Response 驗證，阻擋不符合 OpenAPI 規範的 payload。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card delay-3">
+            <h2 class="card-title"><span class="badge badge-purple">後端工程</span> Backend Backlog Tickets</h2>
+            <div class="card-content ticket-list">
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-601]</span> 正式導入 Azure API Management 基礎架構</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-warning" style="margin-bottom: 8px;">[基礎設施: Azure APIM]</span><br>
+                            部署 Azure API Management，設定將外部 API 路由轉發至內部的 Azure Container Apps 微服務叢集。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>所有來自外部的直接存取內部微服務請求必須被擋下，只允許經由 APIM 的流量。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-602]</span> 實作 APIM 限流政策 (Policies) 與金鑰管理</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-warning" style="margin-bottom: 8px;">[基礎設施: Azure APIM]</span><br>
+                            撰寫 APIM Policies XML，針對不同等級的訂閱帳號設定不同的 API 呼叫配額 (Quota) 與速率限制 (Rate limit)。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>免費測試帳號每分鐘限制 60 次呼叫，超過回傳 `429 Too Many Requests`。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-603]</span> OpenAPI (Swagger) 文件標準化與自動生成</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: 全體 Go 微服務]</span><br>
+                            在 Go 程式碼中補齊 Swag 註解，由 CI/CD 流程自動產生 OpenAPI Specification JSON 並同步更新至 APIM 的 Developer Portal。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>每個開放的 Endpoint 必須附帶 Request Example 與 Response Schema 說明。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-604]</span> 實作外部 Webhook 訂閱與推送機制</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Ops API (Go) / Event Hubs]</span><br>
+                            允許外部夥伴註冊他們的 URL Endpoint，當「訂單狀態更新」或「庫存變動」時，系統主動打 Webhook 通知對方。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>發送 Webhook 時需附帶 HMAC 簽章讓夥伴驗證來源。</li>
+                                <li>若對方伺服器無回應，需具備 Exponential Backoff 重試機制。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card delay-4">
+            <h2 class="card-title"><span class="badge badge-primary">前端工程</span> Frontend Backlog Tickets</h2>
+            <div class="card-content ticket-list">
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-601]</span> 開發者入口網站 (Developer Portal) 佈景客製化</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Azure APIM Portal]</span><br>
+                            利用 Azure APIM 內建的開發者入口網站，套用土豆商城的品牌視覺 (CSS) 與排版，提供無縫的體驗。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>入口網站需具備自適應網頁設計 (RWD)，且色彩對比度符合無障礙規範 (WCAG)。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-602]</span> 後台新增「開發者金鑰管理」與「配額檢視」介面</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Potato-Control (Web)]</span><br>
+                            在內部營運後台中，新增管理頁面以審核外部廠商的 API 申請，並視覺化顯示他們的 API 呼叫用量 (Chart.js)。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>管理員可以一鍵撤銷 (Revoke) 異常暴增流量的金鑰。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-603]</span> 實作互動式 API 測試終端 (API Console)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Developer Portal]</span><br>
+                            在開發者入口整合 Swagger UI 或類似套件，讓開發者能在網頁上直接填入參數發送測試請求。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>測試請求需預設帶入使用者的測試金鑰 (Sandbox Key)，不可誤觸正式環境。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-604]</span> 外部 Webhook 註冊與日誌檢視 UI</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Potato-Partner (Web)]</span><br>
+                            在 B2B 的企業後台中，新增區塊讓外部廠商自行輸入 Webhook 接收網址，並顯示最近 100 筆推送紀錄與成功/失敗狀態。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>需具備重新發送 (Retry) 單筆 Webhook 事件的按鈕。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

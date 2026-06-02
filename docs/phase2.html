@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第二梯次：替換現有系統 - 土豆商城 (Azure)</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <!-- Brand logo -->
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#3b82f6" />
+                        <stop offset="100%" stop-color="#06b6d4" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            土豆商城
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="index.html">總覽儀表板 (Dashboard)</a></li>
+            <li class="nav-item"><a href="architecture.html">全景架構圖 (Architecture)</a></li>
+            <li class="nav-item"><a href="phase1.html">第一梯次 (6月底前)</a></li>
+            <li class="nav-item"><a href="phase2.html" class="active">第二梯次 (7月底前)</a></li>
+            <li class="nav-item"><a href="phase3.html">第三梯次 (9月底前)</a></li>
+            <li class="nav-item"><a href="phase4.html">第四梯次 (11月底前)</a></li>
+            <li class="nav-item"><a href="phase5.html">第五梯次 (2027年2月底)</a></li>
+            <li class="nav-item"><a href="phase6.html">第六梯次 (2027年5月底)</a></li>
+            <li class="nav-item"><a href="phase7.html">第七梯次 (2027年7月底)</a></li>
+            <li class="nav-item"><a href="phase8.html">第八梯次 (2027年下半)</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1 class="page-title">第二梯次：替換現有系統與 POS 串接</h1>
+            <p class="page-subtitle">目標期限：7月底前 | 重點：商業結帳、Adyen 金流與舊系統退役</p>
+        </header>
+
+        <div class="grid-2">
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2 class="card-title"><span class="badge badge-success">階段任務</span> 核心目標與範圍</h2>
+                <div class="card-content">
+                    <p>完全淘汰現有的 Pisell 系統，並整合全新的線下實體店面結帳體驗與 Azure 佇列。</p>
+                    <ul class="bullet-list">
+                        <li>完整商業模組：購物車、結帳流程、訂單狀態機。</li>
+                        <li>實體門市整合：開發原生平板 APP (Potato-Control) 導入新 POS 機。</li>
+                        <li>金流處理：完成 Adyen POS 支付金流串接。</li>
+                        <li>異步處理：引入 Azure Event Hubs 作為 Webhook 與結帳重試佇列。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title"><span class="badge badge-danger">潛在風險</span></h2>
+                <div class="card-content">
+                    <ul class="bullet-list">
+                        <li>實體門市網路不穩導致 POS 機與 Adyen 刷卡機斷線。</li>
+                        <li>Adyen API 回應延遲、Webhook 漏發，導致訂單狀態卡在「付款中」。</li>
+                        <li>Pisell 舊有資料格式不相容導致寫入 MongoDB Atlas 失敗。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h2 class="card-title"><span class="badge badge-primary">修復與改進</span></h2>
+                <div class="card-content">
+                    <ul class="bullet-list">
+                        <li>在 Potato-Control APP 中實作離線模式 (Offline-first)，網路恢復後自動同步。</li>
+                        <li>後端導入 Azure Service Bus 或 Event Hubs 佇列，確保交易事件百分百送達。</li>
+                        <li>撰寫專門的 ETL (Extract, Transform, Load) 腳本處理 Pisell 資料清理。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card delay-3">
+            <h2 class="card-title"><span class="badge badge-purple">後端工程</span> Backend Backlog Tickets</h2>
+            <div class="card-content ticket-list">
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-201]</span> 開發 Commerce 領域 API (購物車與結帳)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Commerce API (Go)]</span><br>
+                            實作建立訂單、更新購物車、計算運費與稅金之 API，並處理併發下單的問題。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>API 能正確計算商品小計、稅金與折扣。</li>
+                                <li>使用 MongoDB 的分散式 Transaction，確保扣庫存與建立訂單必須同時成功或失敗。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-202]</span> 整合 Adyen POS 金流與 Webhook 佇列</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Commerce API (Go) / Azure Service Bus]</span><br>
+                            實作安全的 Webhook 端點以接收 Adyen 非同步付款結果，並將 Payload 直接放入 Azure Service Bus Queue。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>能成功驗證來自 Adyen 的 HMAC 簽章，防止偽造請求。</li>
+                                <li>Webhook 請求需在 2 秒內回覆 200 OK，後續交由 Worker 從 Service Bus 取出慢慢處理，處理失敗需轉移至 Dead-Letter Queue。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-203]</span> 實作 POS 機離線資料同步端點 (Bulk Sync API)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Commerce API (Go)]</span><br>
+                            提供批次上傳 (Bulk upload) API，讓實體店 POS 機重新連網時能一次性上傳所有未結訂單。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>API 必須支援接收 JSON Array，並以 MongoDB `insertMany` 或 `bulkWrite` 的方式寫入，避免佔用連線池。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-204]</span> Pisell 資料轉移 ETL 腳本開發</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[工具程式: Data-Migrator (Python / Go)]</span><br>
+                            撰寫腳本將舊系統的 SQL/CSV 資料匯出，清理並轉換成符合新 MongoDB Atlas 綱要的格式後寫入。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>會員的密碼雜湊能夠無縫轉移，確保舊會員不需強制重設密碼。</li>
+                                <li>歷史訂單資料成功匯入，並且在前後端系統均可正確渲染。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card delay-4">
+            <h2 class="card-title"><span class="badge badge-primary">前端工程</span> Frontend Backlog Tickets</h2>
+            <div class="card-content ticket-list">
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-201]</span> 搭建 potato-store 顧客前台網站</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Potato-Store (Web)]</span><br>
+                            使用 Vite + React + TypeScript 框架，實作首頁、商品列表與購物車的 State Management (Zustand)。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>購物車資料需同步儲存於 localStorage，重新整理頁面後不流失。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-202]</span> 實作結帳表單與 Adyen Drop-in UI</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Potato-Store (Web)]</span><br>
+                            開發包含填寫收件地址、選擇運送方式的結帳流程，並嵌入 Adyen Web Drop-in 元件供線上刷卡。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>使用者成功刷卡後，需正確跳轉至「付款成功」頁面並清除購物車。</li>
+                                <li>若信用卡被拒絕，需顯示對應的友善錯誤提示。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-203]</span> 搭建 potato-control POS 機 APP (Expo/React Native)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[行動端: Potato-Control (APP)]</span><br>
+                            使用 Expo + React Native + NativeWind 建立平板專用 POS 介面。配置 Expo Router 管理路由。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>APP 需針對 iPad/Android 平板等大螢幕設備進行橫向 (Landscape) UI 最佳化。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-204]</span> 實作 POS 機 Offline-first 結帳邏輯</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[行動端: Potato-Control (APP)]</span><br>
+                            在 POS APP 中，使用 AsyncStorage 暫存斷線時的訂單，並實作背景同步 (Background Sync)。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>拔除平板網路後，店員仍能點選商品並建立本機訂單。</li>
+                                <li>網路恢復後，系統會自動在背景呼叫 [BE-203] 進行批次同步，並提供成功 Toast 提示。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

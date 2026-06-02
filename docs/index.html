@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>土豆商城架構藍圖 (Potato Mart Architecture)</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#60a5fa" />
+                        <stop offset="100%" stop-color="#a78bfa" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            土豆商城
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="index.html" class="active">總覽儀表板 (Dashboard)</a></li>
+            <li class="nav-item"><a href="architecture.html">全景架構圖 (Architecture)</a></li>
+            <li class="nav-item"><a href="phase1.html">第一梯次 (6月底前)</a></li>
+            <li class="nav-item"><a href="phase2.html">第二梯次 (7月底前)</a></li>
+            <li class="nav-item"><a href="phase3.html">第三梯次 (9月底前)</a></li>
+            <li class="nav-item"><a href="phase4.html">第四梯次 (11月底前)</a></li>
+            <li class="nav-item"><a href="phase5.html">第五梯次 (2027年2月底)</a></li>
+            <li class="nav-item"><a href="phase6.html">第六梯次 (2027年5月底)</a></li>
+            <li class="nav-item"><a href="phase7.html">第七梯次 (2027年7月底)</a></li>
+            <li class="nav-item"><a href="phase8.html">第八梯次 (2027年下半)</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1 class="page-title">架構與開發藍圖總覽</h1>
+            <p class="page-subtitle">請透過左側選單進入各別梯次，或點擊「全景架構圖」檢視系統拓樸與細節設定。</p>
+        </header>
+
+        <div class="grid-2">
+            <div class="card delay-1">
+                <h2 class="card-title">
+                    <span class="badge badge-primary">里程碑</span>
+                    階段任務
+                </h2>
+                <div class="card-content">
+                    <p>將土豆商城系統從最初的內部 MVP，一路擴展至能承載海量流量與支援多租戶架構的大型平台，最終跨足 WebXR 虛擬商場體驗。</p>
+                    <ul class="bullet-list">
+                        <li><strong>6月~7月：</strong>淘汰舊系統 (Pisell)，實作核心商業與營運。</li>
+                        <li><strong>9月~11月：</strong>全通路覆蓋 (APP、網頁、直播)。</li>
+                        <li><strong>2027年：</strong>規模化複製、Open API、海量擴展與 VR。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card delay-2">
+                <h2 class="card-title">
+                    <span class="badge badge-success">任務管理</span>
+                    可執行的 Backlog Tickets
+                </h2>
+                <div class="card-content">
+                    <p>每個梯次的頁面中皆包含了極度詳細的「後端」與「前端」任務表單。每個任務皆附有具體的驗收標準 (Acceptance Criteria)。</p>
+                    <ul class="bullet-list">
+                        <li>標籤 <strong>[BE-XXX]</strong> 代表 Backend (後端)。</li>
+                        <li>標籤 <strong>[FE-XXX]</strong> 代表 Frontend (前端)。</li>
+                        <li>設計為可直接複製到 GitHub Projects 的 Ticket 格式。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

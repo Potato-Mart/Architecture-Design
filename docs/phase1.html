@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第一梯次：內部 MVP - 土豆商城 (Azure)</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#3b82f6" />
+                        <stop offset="100%" stop-color="#06b6d4" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            土豆商城
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="index.html">總覽儀表板 (Dashboard)</a></li>
+            <li class="nav-item"><a href="architecture.html">全景架構圖 (Architecture)</a></li>
+            <li class="nav-item"><a href="phase1.html" class="active">第一梯次 (6月底前)</a></li>
+            <li class="nav-item"><a href="phase2.html">第二梯次 (7月底前)</a></li>
+            <li class="nav-item"><a href="phase3.html">第三梯次 (9月底前)</a></li>
+            <li class="nav-item"><a href="phase4.html">第四梯次 (11月底前)</a></li>
+            <li class="nav-item"><a href="phase5.html">第五梯次 (2027年2月底)</a></li>
+            <li class="nav-item"><a href="phase6.html">第六梯次 (2027年5月底)</a></li>
+            <li class="nav-item"><a href="phase7.html">第七梯次 (2027年7月底)</a></li>
+            <li class="nav-item"><a href="phase8.html">第八梯次 (2027年下半)</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1 class="page-title">第一梯次：內部 MVP</h1>
+            <p class="page-subtitle">目標期限：6月底前 | 重點：高 CP 值 Azure 基礎設施與內部營運</p>
+        </header>
+
+        <div class="grid-2">
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2 class="card-title"><span class="badge badge-success">階段任務</span> 核心目標與範圍</h2>
+                <div class="card-content">
+                    <p>專注於內部核心功能，讓團隊能提早熟悉新系統，並確立最低成本的 Azure 雲端環境標準。</p>
+                    <ul class="bullet-list">
+                        <li>基礎建設：配置 MongoDB Atlas 與 Azure Container Apps (ACA)，捨棄昂貴的 K8s 叢集。</li>
+                        <li>前端部署：全面採用 Azure Static Web Apps 免費層級。</li>
+                        <li>身分驗證 (Auth)：實作內部員工 JWT 登入模組。</li>
+                        <li>基礎營運：產品型錄、庫存盤點管理、揀貨單自動化與 POS 基礎設定。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title"><span class="badge badge-danger">潛在風險</span></h2>
+                <div class="card-content">
+                    <ul class="bullet-list">
+                        <li>系統初期可能不穩定，導致內部測試受阻。</li>
+                        <li>MongoDB Atlas 設定錯誤可能導致效能瓶頸或費用暴增。</li>
+                        <li>缺乏龐大的 API Gateway，初期需倚賴 ACA 內建 Ingress，管理較為陽春。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h2 class="card-title"><span class="badge badge-primary">修復與改進</span></h2>
+                <div class="card-content">
+                    <ul class="bullet-list">
+                        <li>第一版先開通 MongoDB Atlas 無伺服器模式 (Serverless) 或共享叢集以控制成本。</li>
+                        <li>利用 Azure Container Apps 的 Scale to Zero 特性，降低非營業時間的運算費用。</li>
+                        <li>嚴格落實 Azure DevOps CI/CD 自動化發布流水線，減少人工作業。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card delay-3">
+            <h2 class="card-title"><span class="badge badge-purple">後端工程</span> Backend Backlog Tickets</h2>
+            <div class="card-content ticket-list">
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-101]</span> 配置 MongoDB Atlas 與基礎 Collections</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-warning" style="margin-bottom: 8px;">[基礎設施: MongoDB / Go]</span><br>
+                            設計並建置 MongoDB Atlas 的 Management 與 Operations 集合，包含員工 (Users, Roles) 與庫存 (SKUs, Inventories)。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>完成 MongoDB Migration 腳本或建立必要的 Index (如 Unique Index)，無報錯執行。</li>
+                                <li>完成關聯設計 (利用 ObjectId 參照如 `inventory_id` 對應 `sku_id`)。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-102]</span> 實作 Backend-Shared-Contract</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[程式庫: Backend-Shared-Contract (Go)]</span><br>
+                            在獨立 Repository 定義全域使用的 Enums (如訂單狀態碼、角色列舉)、DTOs (Data Transfer Objects)。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>完成 Go 語言的 Struct 宣告，並加上適當的 JSON/BSON Tag。</li>
+                                <li>發布至私有 Git 庫或 Azure Artifacts 供其他微服務 Import。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-103]</span> 開發 JWT 身分驗證模組與 RBAC API</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Mgmt & Auth API (Go)]</span><br>
+                            實作員工登入端點 (`/api/v1/auth/login`)，發放 JWT Access Token。實作 RBAC 權限檢查 Middleware。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>密碼必須使用 bcrypt 進行雜湊加密儲存。</li>
+                                <li>Middleware 能夠正確解析 Token 並拒絕無權限的存取 (回傳 401/403)。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-104]</span> 部署服務至 Azure Container Apps (ACA)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-warning" style="margin-bottom: 8px;">[基礎設施: ACA / DevOps]</span><br>
+                            捨棄昂貴的 AKS，改為撰寫 ACA Bicep 腳本或透過 Azure CLI，並在 Azure DevOps 建立 CI/CD 流水線。設定 Scale to Zero 以極小化成本。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>Git Commit 推送至 main 分支後，能自動編譯 Docker Image 推送至 ACR，並成功更新 ACA 容器。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-105]</span> 開發揀貨單自動化產出與列印 API</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Operations API (Go)]</span><br>
+                            針對成立的訂單自動生成 PDF 或 HTML 格式的揀貨單 (Picking List)，支援批次匯出功能。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>能根據倉庫儲位排序揀貨清單，提升店員揀貨效率。</li>
+                                <li>API 回應時間小於 500ms，產生的 PDF 需支援條碼/QR Code 掃描。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card delay-4">
+            <h2 class="card-title"><span class="badge badge-primary">前端工程</span> Frontend Backlog Tickets</h2>
+            <div class="card-content ticket-list">
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-101]</span> 搭建 potato-control 網頁後台框架</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Potato-Control (Web)]</span><br>
+                            使用 Vite + React + TypeScript 初始化專案。配置 Tailwind CSS，設定 React Router 與全域狀態 (Tanstack Query)。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>成功執行 `npm run dev` 且無 TypeScript 錯誤。</li>
+                                <li>完成基礎的左側導覽列 (Sidebar) 與頂部列 (Header) Layout 元件。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-102]</span> 實作登入頁面與 Token 攔截器 (Interceptor)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Potato-Control (Web)]</span><br>
+                            實作登入表單 UI。設定 Axios/Fetch Interceptor，自動在後續 API Request 的 Header 加上 `Authorization: Bearer <token>`。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>輸入錯誤帳密能正確顯示來自 API 的錯誤訊息。</li>
+                                <li>登入成功後能正確將 Token 存入 localStorage / Cookie，並跳轉至首頁。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-103]</span> 開發「庫存盤點」React 元件與表單</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Potato-Control (Web)]</span><br>
+                            提供快速檢索 SKU 的 DataGrid (可搭配 Tanstack Table)，並實作單筆或批次修改庫存數量的對話框 (Dialog)。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>能夠透過名稱或 SKU 條碼即時搜尋商品。</li>
+                                <li>修改數量送出後，需有防呆確認視窗，並能顯示 API 成功或失敗的 Toast 提示。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-104]</span> 前端資源免費部署至 Azure Static Web Apps</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[基礎設施: DevOps / Frontend]</span><br>
+                            設定 Azure Pipelines 將編譯後的 Vite 打包產物部署至 Azure Static Web Apps 的 Free 層級，享有零成本託管與全域快取。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>開發團隊 Push 至 Git 後能自動發布到 dev 環境網址，且具備 SSL 憑證。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-105]</span> 實作 POS 機基本設定與收銀綁定 UI</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Potato-Control (Web & APP)]</span><br>
+                            在後台與 POS APP 實作收銀機綁定設定，包含硬體周邊 (掃碼槍、出單機) 的連線設定與基礎 UI。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>可透過藍牙或網域 IP 成功綁定熱感應印表機。</li>
+                                <li>具備「測試列印」功能按鈕。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</body>
+</html>

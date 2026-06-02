@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全景架構圖 - 土豆商城 (極致降本 Azure 版)</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .topology {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#3b82f6" />
+                        <stop offset="100%" stop-color="#06b6d4" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            土豆商城 <span style="font-size: 0.75rem; background: #1e3a8a; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">Cost-Optimized</span>
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="index.html">總覽儀表板 (Dashboard)</a></li>
+            <li class="nav-item"><a href="architecture.html" class="active">全景架構圖 (Architecture)</a></li>
+            <li class="nav-item"><a href="phase1.html">第一梯次 (6月底前)</a></li>
+            <li class="nav-item"><a href="phase2.html">第二梯次 (7月底前)</a></li>
+            <li class="nav-item"><a href="phase3.html">第三梯次 (9月底前)</a></li>
+            <li class="nav-item"><a href="phase4.html">第四梯次 (11月底前)</a></li>
+            <li class="nav-item"><a href="phase5.html">第五梯次 (2027年2月底)</a></li>
+            <li class="nav-item"><a href="phase6.html">第六梯次 (2027年5月底)</a></li>
+            <li class="nav-item"><a href="phase7.html">第七梯次 (2027年7月底)</a></li>
+            <li class="nav-item"><a href="phase8.html">第八梯次 (2027年下半)</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1 class="page-title">互動式全景系統架構 (System Topology)</h1>
+            <p class="page-subtitle">以高性價比、無伺服器 (Serverless) 為核心基礎設施。請點擊方塊檢視各模組的技術選型與設定。</p>
+        </header>
+
+        <div class="architecture-container">
+            <!-- Left Side: Topology Map -->
+            <div class="topology">
+                <!-- Layer 1: Client -->
+                <div class="topology-layer">
+                    <div class="layer-title">使用者端層 (CLIENT)</div>
+                    <div class="nodes-container">
+                        <div class="node" onclick="showNodeDetails('store')">🛒 potato-store<br><small>(Web/APP)</small></div>
+                        <div class="node" onclick="showNodeDetails('control')">⚙️ potato-control<br><small>(Admin/POS)</small></div>
+                        <div class="node" onclick="showNodeDetails('partner')">🤝 potato-partner<br><small>(B2B)</small></div>
+                    </div>
+                </div>
+
+                <!-- Arrow down -->
+                <div style="text-align: center; color: var(--border-color);">▼</div>
+
+                <!-- Layer 2: Edge & Gateway -->
+                <div class="topology-layer">
+                    <div class="layer-title">邊緣與閘道層 (EDGE & GATEWAY)</div>
+                    <div class="nodes-container">
+                        <div class="node" style="width: 80%; background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.2)); border-color: #0284c7;" onclick="showNodeDetails('gateway')">
+                            ☁️ Azure Static Web Apps (全球邊緣快取) / ACA 內建 Ingress 路由
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; color: var(--border-color);">▼</div>
+
+                <!-- Layer 3: Microservices -->
+                <div class="topology-layer">
+                    <div class="layer-title">微服務層 (SERVERLESS MICROSERVICES - ACA)</div>
+                    <div class="nodes-container">
+                        <div class="node" onclick="showNodeDetails('svc-auth')">🔐 Auth/Mgmt API</div>
+                        <div class="node" onclick="showNodeDetails('svc-commerce')">💳 Commerce API</div>
+                        <div class="node" onclick="showNodeDetails('svc-ops')">📦 Operations API</div>
+                        <div class="node" onclick="showNodeDetails('svc-live')">🎥 Live Stream API</div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; color: var(--border-color);">▼</div>
+
+                <!-- Layer 4: Infrastructure & External -->
+                <div style="display: flex; gap: 1rem;">
+                    <!-- DBs -->
+                    <div class="topology-layer" style="flex: 2;">
+                        <div class="layer-title">基礎設施層 (INFRASTRUCTURE)</div>
+                        <div class="nodes-container">
+                            <div class="node db" onclick="showNodeDetails('db-mongo')">🍃 MongoDB Atlas</div>
+                            <div class="node db" onclick="showNodeDetails('db-redis')">⚡ Azure Cache for Redis</div>
+                            <div class="node db" onclick="showNodeDetails('db-kafka')">📨 Azure Event Hubs</div>
+                        </div>
+                    </div>
+                    <!-- External -->
+                    <div class="topology-layer" style="flex: 1;">
+                        <div class="layer-title">外部服務層 (EXTERNAL)</div>
+                        <div class="nodes-container" style="flex-direction: column;">
+                            <div class="node ext" onclick="showNodeDetails('ext-adyen')">💳 Adyen POS</div>
+                            <div class="node ext" onclick="showNodeDetails('ext-stream')">☁️ Mux API / AWS IVS</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Side: Details Panel -->
+            <div class="panel-placeholder" id="panel-placeholder">
+                <p>👈 請點擊左側的架構節點以檢視詳細設定</p>
+            </div>
+            
+            <div class="side-panel" id="side-panel">
+                <div class="panel-header">
+                    <h3 class="panel-title" id="node-title">Node Name</h3>
+                    <span class="badge badge-primary" id="node-type">Frontend</span>
+                </div>
+                
+                <div class="panel-section">
+                    <h4>🛠️ 技術選型 (Tech Stack)</h4>
+                    <p id="node-stack">React, TailwindCSS, Vite</p>
+                </div>
+                
+                <div class="panel-section">
+                    <h4>🎯 核心職責 (Responsibilities)</h4>
+                    <ul class="bullet-list" id="node-responsibilities">
+                        <li>Loading...</li>
+                    </ul>
+                </div>
+                
+                <div class="panel-section">
+                    <h4>⚙️ 重點設定與防護 (Settings & Security)</h4>
+                    <ul class="bullet-list" id="node-settings">
+                        <li>Loading...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Interactive Logic -->
+    <script>
+        const nodeData = {
+            'store': {
+                title: '🛒 potato-store', type: 'Frontend', stack: 'Web: Vite, React, TS, Tanstack, Tailwind | APP: Kotlin (Android), Swift (iOS)',
+                res: ['一般用戶 (B2C) 前台購物體驗', '包含網頁版與原生 APP 雙平台', '負責購物車、結帳、訂單查詢與直播觀看'],
+                set: ['網頁版透過 Azure Static Web Apps (Free 層) 免費部署，享有 SSL 與全域 CDN', '實作 React Query / TanStack 進行資料抓取與狀態快取', '行動端採用 Fastlane 自動化 CI/CD 部署至雙平台商店']
+            },
+            'control': {
+                title: '⚙️ potato-control', type: 'Frontend / POS', stack: 'Web: Vite, React, TS | APP: Expo, React Native, NativeWind, Zustand',
+                res: ['內部員工後台網頁與實體店面 POS 結帳平板', '支援庫存盤點、商品上下架、報表檢視與列印自動化揀貨單', '支援跨租戶 (Multi-tenant) 上下文切換以切換廠區'],
+                set: ['POS 結帳 APP 實作離線優先 (Offline-first) 本機快取', '攔截器自動帶入 JWT Bearer Token 並處理 Token 刷新', '基於 RBAC 權限動態隱藏導覽列與操作按鈕']
+            },
+            'partner': {
+                title: '🤝 potato-partner', type: 'Frontend', stack: 'Web: Vite, React, TS, Tanstack, Tailwind | APP: Kotlin, Swift',
+                res: ['專供外部盤商 (B2B) 使用的企業採購前台與 APP', '顯示階梯式批發價與大宗採購購物車', '子帳號管理與採購額度審批 UI'],
+                set: ['嚴格的企業帳號 CSRF 與 XSS 防護，驗證 Header 來源', '透過 Static Web Apps 設定路由層級的授權控管']
+            },
+            'gateway': {
+                title: '🛡️ Azure 輕量級閘道 (Ingress)', type: 'Gateway / Aggregator', stack: 'Azure Container Apps (Envoy Ingress) / Node.js BFF',
+                res: ['替換昂貴的 API Management，改用 Container Apps 內建的 HTTP 路由功能節省成本', '處理 HTTPS 終止 (TLS Termination) 並將流量分發至後端微服務', '第六梯次時才升級導入 APIM 以管理對外金鑰'],
+                set: ['利用 Azure Container Apps 環境綁定自訂網域，免除額外伺服器開銷', '設定基礎的速率限制 (Rate Limiting) 與 WAF 規則', 'BFF 層負責併發呼叫多個微服務並聚合成單一 JSON，解決 N+1 延遲問題']
+            },
+            'svc-auth': {
+                title: '🔐 Mgmt & Auth API', type: 'Microservice (ACA)', stack: 'Go (Golang), Backend-Shared-Contract, Docker',
+                res: ['核發與驗證 JWT Token (對接 Azure Notification Hubs 推播權限)', '處理 RBAC 權限與多租戶 (Tenant ID) 驗證邏輯', '員工管理與 OAuth2 授權'],
+                set: ['部署於 Azure Container Apps (ACA)，享受 200萬次免費請求額度', '設定 Scale to Zero (縮容至零)，無流量時自動關閉以省下所有運算費用', '密碼採用 bcrypt 雜湊，機密參數存放於 Azure Key Vault']
+            },
+            'svc-commerce': {
+                title: '💳 Commerce API', type: 'Microservice (ACA)', stack: 'Go (Golang), Saga Pattern, Docker',
+                res: ['處理購物車、結帳邏輯與訂單狀態機 (Order State Machine)', '接收 Adyen 金流 Webhook 狀態更新', '動態計算 B2B/B2C 差異化定價'],
+                set: ['利用 Azure Cache for Redis 實作分散式鎖防護，防止超賣', '訂單寫入採分散式事務模式，透過 Event Hubs 達到最終一致性', '利用 KEDA 監控佇列深度，當訂單暴增時自動擴展容器數量']
+            },
+            'svc-ops': {
+                title: '📦 Operations API', type: 'Microservice (ACA)', stack: 'Go (Golang), Docker',
+                res: ['實體與虛擬庫存數量的盤點與扣除', '產品型錄與多媒體資產管理 (上傳至 Azure Blob Storage)', '自動產出與列印揀貨單 (PDF/HTML)', '產生各門市 (租戶) 的營運報表數據'],
+                set: ['強制的 MongoDB 查詢過濾：所有操作皆需注入 Request Context 的 Tenant ID', '高頻查詢 (如首頁型錄) 透過 Redis 快取回傳，降低資料庫連線成本']
+            },
+            'svc-live': {
+                title: '🎥 Live Stream API', type: 'Microservice (ACA)', stack: 'Node.js, WebSocket (Socket.io)',
+                res: ['建立與管理直播間狀態，呼叫 Mux API 取得直播金鑰', '即時聊天室訊息廣播與過濾', '「邊看邊買」商品推廣事件 (Event Broadcasting)'],
+                set: ['WebSocket 負載平衡在 Container Apps 中需設定 Sticky Sessions', '限制單一使用者的發言頻率以防止洗頻', '支援連線中斷自動重新連線與歷史訊息追溯']
+            },
+            'db-mongo': {
+                title: '🍃 MongoDB Atlas', type: 'Database (NoSQL)', stack: 'MongoDB Atlas (Dedicated/Serverless)',
+                res: ['全受管的 NoSQL 資料庫，儲存所有永久性業務資料', '支援全球分散 (Global Distribution) 與高併發寫入', '使用 Collection 儲存具備彈性 Schema 的訂單與多租戶資料'],
+                set: ['啟用自動擴展 (Autoscale) 以應對雙 11 突發流量', '設定副本集與分片鍵 (Shard Key) 以分散資料', '透過 Private Endpoint 或 IP 白名單防範異常連線存取']
+            },
+            'db-redis': {
+                title: '⚡ Azure Cache for Redis', type: 'In-Memory Cache', stack: 'Azure Cache for Redis (Basic/Standard Tier)',
+                res: ['快取高頻讀取的資料 (首頁商品、B2B定價、設定參數)', '實作分散式鎖防護以處理高併發結帳', '儲存使用者的 Session 與 OTP 狀態'],
+                set: ['採用低成本的 Basic 方案作為 MVP 階段配置', '設定 TTL 與 volatile-lru 記憶體淘汰策略', '啟用資料持久化與異地備援 (未來梯次)']
+            },
+            'db-kafka': {
+                title: '📨 Azure Event Hubs', type: 'Message Broker', stack: 'Azure Event Hubs (Kafka Compatible)',
+                res: ['扮演事件驅動架構 (Event-Driven) 中的中心匯流排', '非同步派發「訂單成立」事件給：扣庫存、發信、推播'],
+                set: ['使用 Kafka 相容端點，讓 Go 微服務不需修改程式碼即可接入', '配置多個 Consumer Groups 達到平行處理', '設定至少一次 (At-Least-Once) 傳遞保證']
+            },
+            'ext-adyen': {
+                title: '💳 Adyen POS / Gateway', type: 'External Service', stack: 'Adyen Drop-in UI / Terminal API',
+                res: ['處理線上信用卡的授權、請款與退款', '與實體店面 POS 刷卡機進行網路通訊'],
+                set: ['嚴格驗證 Adyen 傳送的 Webhook HMAC 簽章', '實作 Idempotency Key 避免網路斷線導致的重複扣款']
+            },
+            'ext-stream': {
+                title: '☁️ 專業直播 SaaS API', type: 'External Service', stack: 'Mux API / AWS IVS',
+                res: ['提供超低延遲的直播影音串流轉碼與全域發佈', '自動將 RTMP 推流轉換為多畫質的 HLS 格式'],
+                set: ['考量自行轉檔極度消耗伺服器資源，外包串流引擎以降低維護成本', '配置直播後自動轉錄為隨選影音 (VOD) 並存回 Azure Blob Storage', '透過 API 動態生成一次性推流金鑰確保安全性']
+            }
+        };
+
+        function showNodeDetails(nodeId) {
+            document.querySelectorAll('.node').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            document.getElementById('panel-placeholder').style.display = 'none';
+            const panel = document.getElementById('side-panel');
+            
+            panel.classList.remove('active');
+            void panel.offsetWidth; 
+
+            const data = nodeData[nodeId];
+            document.getElementById('node-title').innerText = data.title;
+            
+            const badge = document.getElementById('node-type');
+            badge.innerText = data.type;
+            badge.className = 'badge'; 
+            if (data.type.includes('Frontend')) badge.classList.add('badge-primary');
+            else if (data.type.includes('Microservice')) badge.classList.add('badge-purple');
+            else if (data.type.includes('Database') || data.type.includes('Cache') || data.type.includes('Broker')) badge.classList.add('badge-accent');
+            else if (data.type.includes('External')) badge.classList.add('badge-warning');
+            else badge.classList.add('badge-success');
+
+            document.getElementById('node-stack').innerText = data.stack;
+            
+            document.getElementById('node-responsibilities').innerHTML = 
+                data.res.map(r => `<li>${r}</li>`).join('');
+                
+            document.getElementById('node-settings').innerHTML = 
+                data.set.map(s => `<li>${s}</li>`).join('');
+
+            panel.classList.add('active');
+        }
+    </script>
+</body>
+</html>

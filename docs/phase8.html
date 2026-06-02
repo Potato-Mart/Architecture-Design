@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第八梯次：VR 商場體驗 - 土豆商城 (Azure)</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <!-- Brand logo -->
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#3b82f6" />
+                        <stop offset="100%" stop-color="#06b6d4" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            土豆商城
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="index.html">總覽儀表板 (Dashboard)</a></li>
+            <li class="nav-item"><a href="architecture.html">全景架構圖 (Architecture)</a></li>
+            <li class="nav-item"><a href="phase1.html">第一梯次 (6月底前)</a></li>
+            <li class="nav-item"><a href="phase2.html">第二梯次 (7月底前)</a></li>
+            <li class="nav-item"><a href="phase3.html">第三梯次 (9月底前)</a></li>
+            <li class="nav-item"><a href="phase4.html">第四梯次 (11月底前)</a></li>
+            <li class="nav-item"><a href="phase5.html">第五梯次 (2027年2月底)</a></li>
+            <li class="nav-item"><a href="phase6.html">第六梯次 (2027年5月底)</a></li>
+            <li class="nav-item"><a href="phase7.html">第七梯次 (2027年7月底)</a></li>
+            <li class="nav-item"><a href="phase8.html" class="active">第八梯次 (2027年下半)</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1 class="page-title">第八梯次：VR 版商場體驗</h1>
+            <p class="page-subtitle">目標期限：2027年下半年 | 重點：WebXR 網頁先鋒版、3D 建模與互動體驗</p>
+        </header>
+
+        <div class="grid-2">
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2 class="card-title"><span class="badge badge-success">階段任務</span> 核心目標與範圍</h2>
+                <div class="card-content">
+                    <p>導入全新的元宇宙/虛擬實境概念，提升消費者互動體驗與品牌科技感。</p>
+                    <ul class="bullet-list">
+                        <li>基於瀏覽器的 VR：採用 WebXR 與 Three.js 實作網頁版虛擬展間。</li>
+                        <li>行動端擴增：視網頁版進度，逐步將 3D 模型檢視能力 (AR/VR) 整合入原生 APP。</li>
+                        <li>沈浸式購物：將原有的 Commerce API 橋接至 3D 介面中，實現點擊虛擬商品直接加入購物車。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title"><span class="badge badge-danger">潛在風險</span></h2>
+                <div class="card-content">
+                    <ul class="bullet-list">
+                        <li>3D 模型 (GLTF/OBJ) 檔案過大，導致網頁載入時間過長，流失使用者。</li>
+                        <li>手機端 WebGL 效能不足導致嚴重的卡頓或設備發燙。</li>
+                        <li>VR 購物動線設計不良，反而降低結帳轉換率。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h2 class="card-title"><span class="badge badge-primary">修復與改進</span></h2>
+                <div class="card-content">
+                    <ul class="bullet-list">
+                        <li>模型資產進行抽殼與多邊形減面 (Decimation) 處理，並嚴格利用 Azure Blob Storage 的 CDN 邊緣節點進行快取。</li>
+                        <li>設計 2D/3D 切換按鈕，若偵測到設備效能不足，自動降級 (Graceful Degradation) 回 2D 介面。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card delay-3">
+            <h2 class="card-title"><span class="badge badge-purple">後端工程</span> Backend Backlog Tickets</h2>
+            <div class="card-content ticket-list">
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-801]</span> 3D 模型與素材管理 API</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Ops API (Go)]</span><br>
+                            擴充產品型錄功能，支援上傳 `.gltf` 與 `.usdz` 檔案至 Azure Blob Storage，並於 MongoDB Atlas 關聯。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>上傳 API 需驗證檔案副檔名與大小 (不得超過 20MB)。</li>
+                                <li>回傳的 API Response 中需包含 `model_3d_url` 欄位供前端取用。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-802]</span> 擴充 BFF 層以支援場景初始化資料 (Scene Data)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Gateway BFF (Node.js)]</span><br>
+                            為 WebXR 網頁提供專屬的場景初始化 API，一次性回傳虛擬展間座標矩陣 (Transform Matrix) 與關聯商品。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>資料需經過高度壓縮與 Redis 快取，回應時間需極低。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-803]</span> 實作 VR 空間中的多人互動/看見彼此 (PoC)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Live Stream API (Node.js)]</span><br>
+                            (可選) 擴展原有的 WebSocket 服務，廣播同一展間內其他消費者的簡易座標 (Avatar Position)，打造元宇宙的共鳴感。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>位置廣播必須具備節流 (Throttling) 機制，例如每秒只廣播 5 次座標，避免壓垮伺服器。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-804]</span> 3D 模型轉檔排程 Worker</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Ops Worker (Go)]</span><br>
+                            撰寫背景工作腳本，當使用者上傳高精度的原始 3D 模型時，在背景自動呼叫第三方 API 或命令列工具進行壓縮減面。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>自動產生一個小於 5MB 的 Web-optimized 版本供網頁端載入。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card delay-4">
+            <h2 class="card-title"><span class="badge badge-primary">前端工程</span> Frontend Backlog Tickets</h2>
+            <div class="card-content ticket-list">
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-801]</span> WebXR 虛擬展間搭建 (Three.js / React Three Fiber)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Potato-Store (Web)]</span><br>
+                            導入 `@react-three/fiber`，在網頁上渲染出 3D 商場場景，實作第一人稱視角移動邏輯。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>在配備中高階顯卡的電腦上，需維持穩定的 60 FPS 幀率。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-802]</span> 實作 3D 物件點擊與「加入購物車」互動</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Potato-Store (Web)]</span><br>
+                            利用 Raycaster 偵測使用者的滑鼠點擊/螢幕觸控，當擊中 3D 產品時跳出該商品的詳細規格與價格。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>點擊 3D 空間中的「購買」按鈕後，需能正確更新外部 React 元件的 Zustand 購物車狀態。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-803]</span> 原生 APP 整合 ARKit / ARCore (AR 檢視)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[行動端: Potato-Store (APP)]</span><br>
+                            在 Android 與 iOS 平台中，開發「在您的空間預覽」功能，呼叫原生的 AR 套件檢視實體大小。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>iOS 成功載入 `.usdz` 檔案並喚起 Quick Look。Android 成功載入 `.gltf` 檔案。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-804]</span> VR 模式效能降級與防呆處理</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Potato-Store (Web)]</span><br>
+                            實作進場前的硬體偵測，以及加載 3D 資源時的百分比進度條 (Loading Screen)。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>若瀏覽器不支援 WebGL 或效能過低，必須平滑引導使用者回到標準 2D 商品列表頁面。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

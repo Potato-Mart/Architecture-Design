@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第四梯次：效能強化與直播導入 - 土豆商城 (Azure)</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <!-- Brand logo -->
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#3b82f6" />
+                        <stop offset="100%" stop-color="#06b6d4" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            土豆商城
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="index.html">總覽儀表板 (Dashboard)</a></li>
+            <li class="nav-item"><a href="architecture.html">全景架構圖 (Architecture)</a></li>
+            <li class="nav-item"><a href="phase1.html">第一梯次 (6月底前)</a></li>
+            <li class="nav-item"><a href="phase2.html">第二梯次 (7月底前)</a></li>
+            <li class="nav-item"><a href="phase3.html">第三梯次 (9月底前)</a></li>
+            <li class="nav-item"><a href="phase4.html" class="active">第四梯次 (11月底前)</a></li>
+            <li class="nav-item"><a href="phase5.html">第五梯次 (2027年2月底)</a></li>
+            <li class="nav-item"><a href="phase6.html">第六梯次 (2027年5月底)</a></li>
+            <li class="nav-item"><a href="phase7.html">第七梯次 (2027年7月底)</a></li>
+            <li class="nav-item"><a href="phase8.html">第八梯次 (2027年下半)</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1 class="page-title">第四梯次：效能強化與直播導入</h1>
+            <p class="page-subtitle">目標期限：11月底前 | 重點：迎接年底旺季、直播帶貨 (方案A)、效能除錯</p>
+        </header>
+
+        <div class="grid-2">
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2 class="card-title"><span class="badge badge-success">階段任務</span> 核心目標與範圍</h2>
+                <div class="card-content">
+                    <p>在年底的電商購物旺季 (如雙11、黑五) 前完成系統壓測，並上線「電商直播」功能以刺激銷量。</p>
+                    <ul class="bullet-list">
+                        <li>全面檢視 Phase 1~3 的所有功能，進行深度除錯 (Bug fixing) 與效能優化。</li>
+                        <li>在網頁與 APP 中整合「電商直播 (Live Streaming)」功能，實現邊看邊買。</li>
+                        <li>利用 Azure Cache for Redis 快取與 MongoDB Atlas 索引優化，提升回應速度。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title"><span class="badge badge-danger">潛在風險</span></h2>
+                <div class="card-content">
+                    <ul class="bullet-list">
+                        <li>高併發下單 (搶購) 可能導致超賣問題 (Overselling)。</li>
+                        <li>影片直播串流極耗流量，若自己架設流媒體伺服器，可能導致頻寬塞爆且成本難以控制。</li>
+                        <li>直播期間的大量即時聊天訊息，可能拖垮後端微服務。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h2 class="card-title"><span class="badge badge-primary">修復與改進</span></h2>
+                <div class="card-content">
+                    <ul class="bullet-list">
+                        <li>透過 Redis 分散式鎖 (Distributed Lock) 防止庫存超賣。</li>
+                        <li>**採用「方案 A」**：直播串流與轉碼交由專業的外部 SaaS (如 Mux API 或是 AWS IVS) 處理，減輕主伺服器負擔。</li>
+                        <li>將聊天室微服務抽離成獨立的 Socket.io/Websocket Container App 叢集。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card delay-3">
+            <h2 class="card-title"><span class="badge badge-purple">後端工程</span> Backend Backlog Tickets</h2>
+            <div class="card-content ticket-list">
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-401]</span> 開發 Live Stream API (方案 A：串接 Mux / IVS)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Live Stream API (Node.js)]</span><br>
+                            建立管理直播間的 API，向 Mux API 發出請求以取得 RTMP 推流網址與 HLS 播放網址。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>管理員建立直播間後，能正確回傳包含 Stream Key 的 RTMP 網址供 OBS 軟體使用。</li>
+                                <li>使用者請求時回傳有效的 HLS (.m3u8) 播放連結。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-402]</span> 實作即時 WebSocket 聊天室與購物車廣播</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Live Stream API (Node.js)]</span><br>
+                            使用 Socket.io 建立即時聊天伺服器。實作聊天室訊息的限流 (Rate Limiting) 以及「店長推播商品」的廣播事件。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>需在 Azure Container Apps 設定 Sticky Sessions 以支援 WebSocket 負載平衡。</li>
+                                <li>單一帳號發言頻率限制每秒不可超過 2 次，違規者丟棄訊息。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-403]</span> 實作高併發搶購之 Redis 分散式鎖</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Commerce API (Go)]</span><br>
+                            修改現有扣庫存邏輯，導入 Redis SETNX 鎖機制 (或 Redlock 演算法)，確保限量商品在雙十一期間不發生超賣。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>使用 JMeter 發動 1,000 併發購買限量 50 件商品，最終資料庫庫存量必須精準為 0，且只有 50 筆成功訂單。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-404]</span> MongoDB Atlas 慢查詢優化與索引調整</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-warning" style="margin-bottom: 8px;">[基礎設施: MongoDB Atlas / Go]</span><br>
+                            檢閱過去一季的慢查詢紀錄 (Slow Queries)，補齊缺失的複合索引 (Compound Index)。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>所有 API 的 95th Percentile (P95) 回應時間必須小於 200ms。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card delay-4">
+            <h2 class="card-title"><span class="badge badge-primary">前端工程</span> Frontend Backlog Tickets</h2>
+            <div class="card-content ticket-list">
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-401]</span> 原生 APP 直播播放器 (HLS) 實作</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[行動端: Potato-Store (APP)]</span><br>
+                            在 Android 與 iOS 專案中導入原生影音播放器庫 (如 ExoPlayer / AVPlayer) 以解析並播放 Mux 傳來的 HLS 流。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>支援全螢幕切換與子母畫面 (PiP) 模式，讓使用者可以邊看直播邊滑動商品。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-402]</span> 網頁端與行動端之即時聊天室與購物 UI</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Potato-Store (Web & APP)]</span><br>
+                            開發覆蓋於播放器上的 Socket.io 聊天彈幕介面，並實作底部「熱賣商品」抽屜選單 (Bottom Sheet)。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>接收到「推廣事件」時，畫面上方需彈出商品卡片，點擊可直接加入購物車。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-403]</span> 網站載入效能最佳化 (Core Web Vitals)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: 所有 Web 專案]</span><br>
+                            利用 Vite 配置 Code Splitting，壓縮圖片資產 (轉換為 WebP)，減少首屏 Bundle Size，提升 LCP 與 CLS 分數。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>Google Lighthouse 首頁效能評分必須達到 85 分以上。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-404]</span> 前端錯誤收集與監控 (Sentry/Application Insights) 整合</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: 所有 Web & APP]</span><br>
+                            導入錯誤追蹤 SDK，捕獲前端 JavaScript 崩潰與 API 非預期例外錯誤，統一發送至儀表板。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>發生 Error Boundary 捕獲的崩潰時，能附帶使用者的 Session 與 Browser 資訊回傳至後台。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

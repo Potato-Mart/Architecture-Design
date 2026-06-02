@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第七梯次：規模化可擴展系統 - 土豆商城 (Azure)</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <!-- Brand logo -->
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#3b82f6" />
+                        <stop offset="100%" stop-color="#06b6d4" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            土豆商城
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="index.html">總覽儀表板 (Dashboard)</a></li>
+            <li class="nav-item"><a href="architecture.html">全景架構圖 (Architecture)</a></li>
+            <li class="nav-item"><a href="phase1.html">第一梯次 (6月底前)</a></li>
+            <li class="nav-item"><a href="phase2.html">第二梯次 (7月底前)</a></li>
+            <li class="nav-item"><a href="phase3.html">第三梯次 (9月底前)</a></li>
+            <li class="nav-item"><a href="phase4.html">第四梯次 (11月底前)</a></li>
+            <li class="nav-item"><a href="phase5.html">第五梯次 (2027年2月底)</a></li>
+            <li class="nav-item"><a href="phase6.html">第六梯次 (2027年5月底)</a></li>
+            <li class="nav-item"><a href="phase7.html" class="active">第七梯次 (2027年7月底)</a></li>
+            <li class="nav-item"><a href="phase8.html">第八梯次 (2027年下半)</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header class="page-header">
+            <h1 class="page-title">第七梯次：高併發可擴展系統</h1>
+            <p class="page-subtitle">目標期限：2027年7月底前 | 重點：MongoDB Sharding、背景非同步處理、BFF 架構</p>
+        </header>
+
+        <div class="grid-2">
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2 class="card-title"><span class="badge badge-success">階段任務</span> 核心目標與範圍</h2>
+                <div class="card-content">
+                    <p>重構基礎設施與資料庫架構，確保系統能乘載指數型成長的海量資料與流量。</p>
+                    <ul class="bullet-list">
+                        <li>資料層擴展：針對 MongoDB Atlas 實作全球分散式 (Global Distribution) 與分片 (Sharding)。</li>
+                        <li>運算層解耦：導入後台背景工作者 (Background Workers)，減輕 API 伺服器負擔。</li>
+                        <li>網路層優化：前端導入 Backend-For-Frontend (BFF) 架構，解決 Client 端發送過多 API 請求造成的延遲。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title"><span class="badge badge-danger">潛在風險</span></h2>
+                <div class="card-content">
+                    <ul class="bullet-list">
+                        <li>MongoDB Shard Key 若設計不良 (例如熱點集中)，可能導致特定資料節點效能崩潰。</li>
+                        <li>前端過度依賴單一 BFF 節點，BFF 故障將導致整個網站癱瘓。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h2 class="card-title"><span class="badge badge-primary">修復與改進</span></h2>
+                <div class="card-content">
+                    <ul class="bullet-list">
+                        <li>慎選 Shard Key (如使用 `tenant_id` 與 Hashed ObjectID 組合) 確保資料均勻分佈。</li>
+                        <li>BFF 層採用 Node.js 輕量化實作，並且在 Azure Container Apps 部署多個 Replica 進行負載平衡。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card delay-3">
+            <h2 class="card-title"><span class="badge badge-purple">後端工程</span> Backend Backlog Tickets</h2>
+            <div class="card-content ticket-list">
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-701]</span> MongoDB Atlas 讀寫分離與分片 (Sharding) 工程</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-warning" style="margin-bottom: 8px;">[基礎設施: MongoDB Atlas / Go]</span><br>
+                            設定 MongoDB 副本集處理唯讀查詢。針對訂單與日誌 Collection 實作基於 `tenant_id` 或 `date` 的分片鍵 (Shard Key) 策略。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>寫入吞吐量 (Throughput) 需提升至原先的 3 倍以上。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-702]</span> 開發 Background Worker 處理耗時任務</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Ops Worker (Go)]</span><br>
+                            將報表生成 (PDF/Excel)、大量信件寄送等耗時任務從主 API 解耦。透過 Azure Service Bus Queue 觸發獨立的背景容器 (Worker) 執行。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>API 接收報表請求後立即回傳 HTTP 202 Accepted，待 Worker 處理完畢後發送 WebSocket 通知使用者下載。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-703]</span> 建立 Node.js BFF (Backend-For-Frontend) 層</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-purple" style="margin-bottom: 8px;">[微服務: Gateway BFF (Node.js)]</span><br>
+                            實作 BFF 節點。當前端請求「首頁」時，BFF 負責併發呼叫 Commerce API 與 Ops API，並將結果聚合 (Aggregate) 成單一 JSON 回傳。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>前端首頁載入時的網路 Request 數量需減少 50% 以上。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[BE-704]</span> Redis Cluster 快取分片與高可用性設定</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-warning" style="margin-bottom: 8px;">[基礎設施: Azure Redis]</span><br>
+                            升級 Azure Cache for Redis 至標準或進階層級，啟用 Cluster 模式以突破單點記憶體限制。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>單點節點模擬故障時，快取系統能自動切換 (Failover) 而不中斷連線。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card delay-4">
+            <h2 class="card-title"><span class="badge badge-primary">前端工程</span> Frontend Backlog Tickets</h2>
+            <div class="card-content ticket-list">
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-701]</span> 前端網路請求重構 (串接 BFF)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: 包含 APP 在內的所有前端]</span><br>
+                            修改 Axios/Fetch 的請求路徑，將原先分散打向多個微服務的請求，統一改為呼叫新的 BFF Endpoint。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>前端介面無須做大幅度調整，但載入速度 (FCP) 需有肉眼可見的提升。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-702]</span> 長輪詢與 WebSocket 非同步任務進度條</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[前端專案: Potato-Control (Web)]</span><br>
+                            配合 [BE-702] 的背景任務，在後台實作全局的「任務處理中心」UI，顯示匯出報表的即時進度百分比。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>任務完成時需跳出系統通知並提供檔案下載按鈕。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-703]</span> APP 端 GraphQL 介接預先評估 (Spike)</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[行動端: Potato-Store (APP)]</span><br>
+                            (研究任務) 探討在 BFF 層引入 GraphQL 以取代 REST API 的效益，製作一個小型的 Proof of Concept (PoC) 在 APP 內執行。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>提交一份比較 REST BFF 與 GraphQL BFF 的傳輸負載分析報告。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket">
+                    <input type="checkbox" class="ticket-checkbox">
+                    <div class="ticket-content">
+                        <div class="ticket-title"><span class="ticket-id">[FE-704]</span> 前端靜態資源 CDN 多節點壓力測試</div>
+                        <div class="ticket-desc">
+                            <span class="badge badge-primary" style="margin-bottom: 8px;">[基礎設施: DevOps / Frontend]</span><br>
+                            使用自動化壓測腳本模擬全球不同地區的網路節點訪問，驗證 Azure Static Web Apps 與 CDN 快取的命中率與延遲。
+                        </div>
+                        <div class="ticket-ac">
+                            <div class="ticket-ac-title">驗收標準 (Acceptance Criteria):</div>
+                            <ul class="bullet-list" style="margin-top: 0.25rem;">
+                                <li>確保全球主要服務區的靜態資源下載時間皆低於 1.5 秒。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
