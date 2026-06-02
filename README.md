@@ -3,6 +3,8 @@
 互動式架構與開發藍圖網站，內容來自本專案 `docs/` 內的 HTML 文件。
 以 **Vite + React + TypeScript + Tailwind CSS + TanStack (Router & Query)** 重新設計。
 
+官網：[土豆商城架構藍圖 Potato Mart Architecture](https://architecture-design-preview.netlify.app/)
+
 ## 頁面結構
 
 | 路徑 | 內容 |
