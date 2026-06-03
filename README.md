@@ -3,7 +3,7 @@
 互動式架構與開發藍圖網站，內容來自本專案 `docs/` 內的 HTML 文件。
 以 **Vite + React + TypeScript + Tailwind CSS + TanStack (Router & Query)** 重新設計。
 
-官網：[土豆商城架構藍圖 Potato Mart Architecture](https://architecture-design-preview.netlify.app/)
+部署目標：Azure Static Web Apps
 
 ## 頁面結構
 
@@ -33,15 +33,24 @@ npm run preview  # 預覽 production build
 
 ## 資料來源
 
-頁面資料由 `docs/phase*.html` 自動解析而來：
+階段頁面的靜態說明資料由 `docs/phase*.html` 自動解析而來：
 
 ```bash
 python scripts/parse_docs.py
 ```
 
 會產出：
-- `src/data/phases.ts` — 各梯次的目標/風險/改進與任務 (供 Phases 頁面使用)
-- `src/data/tickets.ts` — 攤平的全部任務 (供 Tickets 頁面使用)
+- `src/data/phases.ts` — 各梯次的目標/風險/改進 (供 Phases 頁面使用)
+
+Tickets 不再寫死於前端專案；執行期會透過後端 Issues CRUD API 載入。請以 `.env.example` 設定：
+- `VITE_API_BASE_URL` — 預設 `/api`
+- `VITE_ISSUES_ENDPOINT` — 預設 `/issues`，用於 `GET` 列表與 `POST` 新增 ticket
+- `VITE_ISSUE_DETAIL_ENDPOINT` — 預設 `/issues/:id`，用於讀取單一 ticket
+- `VITE_ISSUE_SYNC_ENDPOINT` — 預設 `/issues/:id/sync`，用於將尚未上傳的 ticket 同步成 GitHub issue
+- `VITE_ISSUES_BULK_ENDPOINT` — 預設 `/issues/bulk`，用於批次新增 tickets
+- `VITE_ISSUES_BULK_BODY_KEY` — 預設空值，代表送出 raw JSON array；若後端需要 envelope，可設定為 `issues`
+
+前端也保留舊的 `VITE_TICKETS_ENDPOINT` / `VITE_TICKET_DETAIL_ENDPOINT` 作為相容 fallback，但新部署建議使用 `ISSUES` 命名。
 
 `src/data/architecture.ts` 則為全景架構拓樸圖的節點資料 (移植自 `docs/architecture.html`)。
 
@@ -52,12 +61,16 @@ python scripts/parse_docs.py
 
 ## 安全性 (Security)
 
-部署於 Netlify。安全標頭與 SPA 路由 fallback 以兩種方式提供，確保不論用哪種部署都會生效：
+部署於 Azure Static Web Apps。安全標頭與 SPA 路由 fallback 由 [`public/staticwebapp.config.json`](./public/staticwebapp.config.json) 提供，Vite build 時會複製進 `dist/`。
 
-- **Git 連動 / `netlify deploy` (由 Netlify 執行 build)** → 讀取倉庫根目錄的 [`netlify.toml`](./netlify.toml)。
-- **手動上傳 build 資料夾 (`dist/`)** → Netlify 改讀 publish 資料夾內的 `_headers` 與 `_redirects`。這兩個檔案放在 [`public/`](./public)，Vite build 時會原樣複製進 `dist/`，所以 build 資料夾一定包含它們。
-
-> ⚠️ `netlify.toml` **不會**被複製進 `dist/`；它只在 Netlify 自行 build 時生效。若你只上傳 `dist/`，靠的是 `public/_headers` 與 `public/_redirects`。三者內容保持一致。
+GitHub Actions workflow 位於 [`.github/workflows/azure-static-web-apps.yml`](./.github/workflows/azure-static-web-apps.yml)。部署前請在 GitHub 設定：
+- Secret `AZURE_STATIC_WEB_APPS_API_TOKEN`
+- Variable `VITE_API_BASE_URL`，例如 `/api` 或後端 API Gateway URL
+- Variable `VITE_ISSUES_ENDPOINT`，預設 `/issues`
+- Variable `VITE_ISSUE_DETAIL_ENDPOINT`，預設 `/issues/:id`
+- Variable `VITE_ISSUE_SYNC_ENDPOINT`，預設 `/issues/:id/sync`
+- Variable `VITE_ISSUES_BULK_ENDPOINT`，預設 `/issues/bulk`
+- Variable `VITE_ISSUES_BULK_BODY_KEY`，預設空值
 
 設定的安全標頭：
 

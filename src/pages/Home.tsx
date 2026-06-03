@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { ArchitectureTopology } from '../components/ArchitectureTopology';
 import { phases } from '../data/phases';
-import { tickets } from '../data/tickets';
+import { useTicketsQuery } from '../api/tickets';
 
 const milestones = [
   {
@@ -19,6 +19,7 @@ const milestones = [
 ];
 
 export function HomePage() {
+  const { data: tickets = [], isError, isLoading } = useTicketsQuery();
   const backendCount = tickets.filter((t) => t.category === 'backend').length;
   const frontendCount = tickets.filter((t) => t.category === 'frontend').length;
 
@@ -58,9 +59,9 @@ export function HomePage() {
       <section className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4">
         {[
           { label: '開發梯次', value: phases.length },
-          { label: '總任務數', value: tickets.length },
-          { label: '後端 Tickets', value: backendCount },
-          { label: '前端 Tickets', value: frontendCount },
+          { label: '總任務數', value: isLoading ? '...' : tickets.length },
+          { label: '後端 Tickets', value: isLoading ? '...' : backendCount },
+          { label: '前端 Tickets', value: isLoading ? '...' : frontendCount },
         ].map((s) => (
           <div key={s.label} className="card text-center">
             <div className="text-3xl font-bold brand-text">{s.value}</div>
@@ -68,6 +69,11 @@ export function HomePage() {
           </div>
         ))}
       </section>
+      {isError && (
+        <div className="mt-4 rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          Ticket API is unavailable, so live ticket counts cannot be shown right now.
+        </div>
+      )}
 
       {/* Whole architecture display */}
       <section className="mt-20">

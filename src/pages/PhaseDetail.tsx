@@ -1,8 +1,10 @@
 import { Link, useParams } from '@tanstack/react-router';
 import { PageHeader } from '../components/PageHeader';
-import { phases, type PhaseTicket } from '../data/phases';
+import { phases } from '../data/phases';
+import { useTicketsQuery } from '../api/tickets';
+import type { Ticket } from '../types/ticket';
 
-function TicketItem({ ticket }: { ticket: PhaseTicket }) {
+function TicketItem({ ticket }: { ticket: Ticket }) {
   return (
     <div className="rounded-lg border border-white/10 bg-white/[0.05] p-5 transition hover:border-primary">
       <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -36,6 +38,7 @@ function TicketItem({ ticket }: { ticket: PhaseTicket }) {
 export function PhaseDetailPage() {
   const { slug } = useParams({ from: '/phases/$slug' });
   const phase = phases.find((p) => p.slug === slug);
+  const { data: tickets = [], isError, isLoading } = useTicketsQuery();
 
   if (!phase) {
     return (
@@ -51,6 +54,12 @@ export function PhaseDetailPage() {
   const idx = phases.findIndex((p) => p.slug === slug);
   const prev = idx > 0 ? phases[idx - 1] : null;
   const next = idx < phases.length - 1 ? phases[idx + 1] : null;
+  const backendTickets = tickets.filter(
+    (ticket) => ticket.phase === phase.phase && ticket.category === 'backend',
+  );
+  const frontendTickets = tickets.filter(
+    (ticket) => ticket.phase === phase.phase && ticket.category === 'frontend',
+  );
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
@@ -120,11 +129,19 @@ export function PhaseDetailPage() {
         <h2 className="mb-4 flex items-center gap-2 text-2xl font-semibold">
           <span className="badge badge-purple">後端工程</span> Backend Backlog Tickets
         </h2>
-        <div className="space-y-4">
-          {phase.backend.map((t) => (
-            <TicketItem key={t.id} ticket={t} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="card text-center text-slate-400">Loading backend tickets from the API...</div>
+        ) : isError ? (
+          <div className="card text-center text-red-200">Ticket API request failed.</div>
+        ) : backendTickets.length > 0 ? (
+          <div className="space-y-4">
+            {backendTickets.map((t) => (
+              <TicketItem key={t.id} ticket={t} />
+            ))}
+          </div>
+        ) : (
+          <div className="card text-center text-slate-400">No backend tickets returned for this phase.</div>
+        )}
       </section>
 
       {/* Frontend tickets */}
@@ -132,11 +149,19 @@ export function PhaseDetailPage() {
         <h2 className="mb-4 flex items-center gap-2 text-2xl font-semibold">
           <span className="badge badge-primary">前端工程</span> Frontend Backlog Tickets
         </h2>
-        <div className="space-y-4">
-          {phase.frontend.map((t) => (
-            <TicketItem key={t.id} ticket={t} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="card text-center text-slate-400">Loading frontend tickets from the API...</div>
+        ) : isError ? (
+          <div className="card text-center text-red-200">Ticket API request failed.</div>
+        ) : frontendTickets.length > 0 ? (
+          <div className="space-y-4">
+            {frontendTickets.map((t) => (
+              <TicketItem key={t.id} ticket={t} />
+            ))}
+          </div>
+        ) : (
+          <div className="card text-center text-slate-400">No frontend tickets returned for this phase.</div>
+        )}
       </section>
 
       {/* Prev / Next */}

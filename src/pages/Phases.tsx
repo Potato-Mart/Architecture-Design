@@ -1,8 +1,13 @@
 import { Link } from '@tanstack/react-router';
 import { PageHeader } from '../components/PageHeader';
 import { phases } from '../data/phases';
+import { useTicketsQuery } from '../api/tickets';
 
 export function PhasesPage() {
+  const { data: tickets = [], isLoading } = useTicketsQuery();
+  const ticketCount = (phase: number, category: 'backend' | 'frontend') =>
+    tickets.filter((ticket) => ticket.phase === phase && ticket.category === category).length;
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
       <PageHeader
@@ -23,8 +28,12 @@ export function PhasesPage() {
               <span className="rounded bg-primary/10 px-2 py-1 font-mono text-sm text-primary">
                 Phase {p.phase}
               </span>
-              <span className="badge badge-purple">{p.backend.length} 後端</span>
-              <span className="badge badge-primary">{p.frontend.length} 前端</span>
+              <span className="badge badge-purple">
+                {isLoading ? '...' : ticketCount(p.phase, 'backend')} 後端
+              </span>
+              <span className="badge badge-primary">
+                {isLoading ? '...' : ticketCount(p.phase, 'frontend')} 前端
+              </span>
             </div>
             <h2 className="mb-2 text-xl font-semibold">{p.title}</h2>
             <p className="mb-3 text-sm text-slate-400">{p.subtitle}</p>
