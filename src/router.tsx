@@ -3,6 +3,7 @@ import {
   createRoute,
   createRouter,
 } from '@tanstack/react-router';
+import { Suspense, lazy } from 'react';
 import { Layout } from './components/Layout';
 import { HomePage } from './pages/Home';
 import { ArchitecturePage } from './pages/Architecture';
@@ -12,6 +13,24 @@ import { TicketsPage } from './pages/Tickets';
 import { TicketDetailPage } from './pages/TicketDetail';
 import { AboutPage } from './pages/About';
 import { NotFoundPage } from './pages/NotFound';
+
+const LazyContractErdPage = lazy(() =>
+  import('./pages/ContractErd').then((module) => ({ default: module.ContractErdPage })),
+);
+
+function ContractErdRoute() {
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-auto max-w-7xl px-4 py-16 text-slate-400 sm:px-6 lg:px-8">
+          Loading contract ERD...
+        </div>
+      }
+    >
+      <LazyContractErdPage />
+    </Suspense>
+  );
+}
 
 const rootRoute = createRootRoute({
   component: Layout,
@@ -28,6 +47,12 @@ const architectureRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/architecture',
   component: ArchitecturePage,
+});
+
+const contractsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/contracts',
+  component: ContractErdRoute,
 });
 
 const phasesRoute = createRoute({
@@ -63,6 +88,7 @@ const aboutRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   architectureRoute,
+  contractsRoute,
   phasesRoute,
   phaseDetailRoute,
   ticketsRoute,

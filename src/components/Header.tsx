@@ -4,6 +4,7 @@ import { Link } from '@tanstack/react-router';
 const navLinks = [
   { to: '/', label: '總覽 Overview', exact: true },
   { to: '/architecture', label: '全景架構 Architecture' },
+  { to: '/contracts', label: '合約 ERD Contracts' },
   { to: '/phases', label: '開發梯次 Phases' },
   { to: '/tickets', label: '任務 Tickets' },
   { to: '/about', label: '關於 About' },
@@ -20,7 +21,7 @@ export function Header() {
           <span className="text-lg font-bold brand-text">土豆商城 Potato Mart</span>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-1 lg:flex">
           {navLinks.map((link) => (
             <Link
               key={link.to}
@@ -35,7 +36,7 @@ export function Header() {
 
         <button
           type="button"
-          className="rounded-lg p-2 text-slate-300 hover:bg-white/5 md:hidden"
+          className="rounded-lg p-2 text-slate-300 hover:bg-white/5 lg:hidden"
           aria-label="Toggle navigation"
           onClick={() => setOpen((v) => !v)}
         >
@@ -57,7 +58,7 @@ export function Header() {
       </div>
 
       {open && (
-        <nav className="border-t border-white/10 bg-ink/95 px-4 py-3 md:hidden">
+        <nav className="border-t border-white/10 bg-ink/95 px-4 py-3 lg:hidden">
           {navLinks.map((link) => (
             <Link
               key={link.to}
