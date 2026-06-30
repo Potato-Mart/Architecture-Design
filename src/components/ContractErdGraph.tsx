@@ -18,15 +18,16 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import {
-  contractErdData,
   type ContractEdge,
   type ContractEdgeKind,
+  type ContractErdData,
   type ContractField,
   type ContractNode,
 } from '../data/contractErd';
 
 interface ContractNodeData extends Record<string, unknown> {
   contractNode: ContractNode;
+  color: string;
   relationshipCount: number;
 }
 
@@ -85,8 +86,8 @@ const packagePalette = [
   '#818cf8',
 ];
 
-function packageColor(packageName: string) {
-  const index = contractErdData.packages.indexOf(packageName);
+function packageColor(packageName: string, packages: string[]) {
+  const index = packages.indexOf(packageName);
   return packagePalette[Math.max(index, 0) % packagePalette.length];
 }
 
@@ -105,6 +106,7 @@ function nodeMatches(node: ContractNode, query: string) {
 }
 
 function getVisibleNodeIds(
+  data: ContractErdData,
   selectedPackages: Set<string>,
   edgeKinds: Set<ContractEdgeKind>,
   searchQuery: string,
@@ -112,7 +114,7 @@ function getVisibleNodeIds(
 ) {
   const query = searchQuery.trim().toLowerCase();
   const baseIds = new Set(
-    contractErdData.nodes
+    data.nodes
       .filter((node) => selectedPackages.has(node.packageName))
       .filter((node) => showCommon || node.kind !== 'common')
       .map((node) => node.id),
@@ -123,10 +125,10 @@ function getVisibleNodeIds(
   }
 
   const matchedIds = new Set(
-    contractErdData.nodes.filter((node) => nodeMatches(node, query)).map((node) => node.id),
+    data.nodes.filter((node) => nodeMatches(node, query)).map((node) => node.id),
   );
   const expandedIds = new Set(matchedIds);
-  for (const edge of contractErdData.edges) {
+  for (const edge of data.edges) {
     if (!edgeKinds.has(edge.kind)) {
       continue;
     }
@@ -139,7 +141,11 @@ function getVisibleNodeIds(
   return new Set([...baseIds].filter((id) => expandedIds.has(id)));
 }
 
-function getLayoutedNodes(nodes: ContractNode[], relationshipCounts: Map<string, number>) {
+function getLayoutedNodes(
+  nodes: ContractNode[],
+  relationshipCounts: Map<string, number>,
+  packages: string[],
+) {
   const visiblePackages = [...new Set(nodes.map((node) => node.packageName))].sort((a, b) =>
     a.localeCompare(b),
   );
@@ -169,6 +175,7 @@ function getLayoutedNodes(nodes: ContractNode[], relationshipCounts: Map<string,
       },
       data: {
         contractNode: node,
+        color: packageColor(node.packageName, packages),
         relationshipCount: relationshipCounts.get(node.id) ?? 0,
       },
     };
@@ -208,8 +215,7 @@ function getFlowEdges(edges: ContractEdge[]) {
 }
 
 function ContractNodeCard({ data, selected }: NodeProps<ContractFlowNode>) {
-  const { contractNode, relationshipCount } = data;
-  const color = packageColor(contractNode.packageName);
+  const { contractNode, color, relationshipCount } = data;
   const visibleFields = contractNode.fields.slice(0, 4);
   const hiddenFieldCount = contractNode.fields.length - visibleFields.length;
 
@@ -380,10 +386,10 @@ function GraphToolbar({
   );
 }
 
-function ContractErdGraphInner() {
+function ContractErdGraphInner({ data }: { data: ContractErdData }) {
   const nonCommonPackages = useMemo(
-    () => contractErdData.packages.filter((packageName) => packageName !== 'common'),
-    [],
+    () => data.packages.filter((packageName) => packageName !== 'common'),
+    [data.packages],
   );
   const [selectedPackages, setSelectedPackages] = useState(() => new Set(nonCommonPackages));
   const [selectedEdgeKinds, setSelectedEdgeKinds] = useState(
@@ -395,42 +401,43 @@ function ContractErdGraphInner() {
   const stableNodeTypes = useMemo(() => nodeTypes, []);
 
   const nodeById = useMemo(
-    () => new Map(contractErdData.nodes.map((node) => [node.id, node])),
-    [],
+    () => new Map(data.nodes.map((node) => [node.id, node])),
+    [data.nodes],
   );
 
   const visibleNodeIds = useMemo(
-    () => getVisibleNodeIds(selectedPackages, selectedEdgeKinds, searchQuery, showCommon),
-    [searchQuery, selectedEdgeKinds, selectedPackages, showCommon],
+    () => getVisibleNodeIds(data, selectedPackages, selectedEdgeKinds, searchQuery, showCommon),
+    [data, searchQuery, selectedEdgeKinds, selectedPackages, showCommon],
   );
 
   const visibleEdges = useMemo(
     () =>
-      contractErdData.edges.filter(
+      data.edges.filter(
         (edge) =>
           selectedEdgeKinds.has(edge.kind) &&
           visibleNodeIds.has(edge.source) &&
           visibleNodeIds.has(edge.target),
       ),
-    [selectedEdgeKinds, visibleNodeIds],
+    [data.edges, selectedEdgeKinds, visibleNodeIds],
   );
 
   const relationshipCounts = useMemo(() => {
     const counts = new Map<string, number>();
-    for (const edge of contractErdData.edges) {
+    for (const edge of data.edges) {
       counts.set(edge.source, (counts.get(edge.source) ?? 0) + 1);
       counts.set(edge.target, (counts.get(edge.target) ?? 0) + 1);
     }
     return counts;
-  }, []);
+  }, [data.edges]);
 
   const flowNodes = useMemo(
     () =>
       getLayoutedNodes(
-        contractErdData.nodes.filter((node) => visibleNodeIds.has(node.id)),
+        data.nodes.filter((node) => visibleNodeIds.has(node.id)),
         relationshipCounts,
+        data.packages,
       ),
-    [relationshipCounts, visibleNodeIds],
+    [data.nodes, data.packages, relationshipCounts, visibleNodeIds],
   );
   const flowEdges = useMemo(() => getFlowEdges(visibleEdges), [visibleEdges]);
 
@@ -456,10 +463,10 @@ function ContractErdGraphInner() {
 
   const selectedNode = nodeById.get(selectedNodeId) ?? nodeById.get(flowNodes[0]?.id ?? '');
   const incomingRelationships = selectedNode
-    ? contractErdData.edges.filter((edge) => edge.target === selectedNode.id)
+    ? data.edges.filter((edge) => edge.target === selectedNode.id)
     : [];
   const outgoingRelationships = selectedNode
-    ? contractErdData.edges.filter((edge) => edge.source === selectedNode.id)
+    ? data.edges.filter((edge) => edge.source === selectedNode.id)
     : [];
 
   const togglePackage = (packageName: string) => {
@@ -487,7 +494,7 @@ function ContractErdGraphInner() {
   };
 
   const selectAllPackages = () => {
-    setSelectedPackages(new Set(showCommon ? contractErdData.packages : nonCommonPackages));
+    setSelectedPackages(new Set(showCommon ? data.packages : nonCommonPackages));
   };
 
   const clearSearch = () => {
@@ -539,7 +546,7 @@ function ContractErdGraphInner() {
                 </div>
               </div>
               <div className="flex max-h-32 flex-wrap gap-2 overflow-auto pr-1">
-                {contractErdData.packages.map((packageName) => {
+                {data.packages.map((packageName) => {
                   const disabled = packageName === 'common' && !showCommon;
                   return (
                     <label
@@ -559,7 +566,7 @@ function ContractErdGraphInner() {
                       />
                       <span
                         className="h-2 w-2 rounded-full"
-                        style={{ backgroundColor: packageColor(packageName) }}
+                        style={{ backgroundColor: packageColor(packageName, data.packages) }}
                       />
                       {packageName}
                     </label>
@@ -641,7 +648,7 @@ function ContractErdGraphInner() {
               pannable
               zoomable
               nodeColor={(node) =>
-                packageColor((node.data as ContractNodeData).contractNode.packageName)
+                (node.data as ContractNodeData).color
               }
               className="!border !border-white/10 !bg-slate-950/90"
             />
@@ -649,8 +656,8 @@ function ContractErdGraphInner() {
               <GraphToolbar
                 visibleNodeCount={nodes.length}
                 visibleEdgeCount={edges.length}
-                totalNodeCount={contractErdData.metadata.nodeCount}
-                totalEdgeCount={contractErdData.metadata.edgeCount}
+                totalNodeCount={data.metadata.nodeCount}
+                totalEdgeCount={data.metadata.edgeCount}
               />
             </Panel>
           </ReactFlow>
@@ -680,7 +687,7 @@ function ContractErdGraphInner() {
                 <div className="mb-3 flex flex-wrap items-center gap-2">
                   <span
                     className="rounded-full px-3 py-1 text-xs font-bold uppercase text-slate-950"
-                    style={{ backgroundColor: packageColor(selectedNode.packageName) }}
+                    style={{ backgroundColor: packageColor(selectedNode.packageName, data.packages) }}
                   >
                     {selectedNode.packageName}
                   </span>
@@ -735,10 +742,10 @@ function ContractErdGraphInner() {
   );
 }
 
-export function ContractErdGraph() {
+export function ContractErdGraph({ data }: { data: ContractErdData }) {
   return (
     <ReactFlowProvider>
-      <ContractErdGraphInner />
+      <ContractErdGraphInner data={data} />
     </ReactFlowProvider>
   );
 }
